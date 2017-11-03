@@ -5,7 +5,7 @@
 
 var img = document.getElementById("image");
 img.onload = Webglife;
-img.src = "forest.jpg";
+img.src = "echeveriaFlowers.jpg";
 
 
 function Webglife(){

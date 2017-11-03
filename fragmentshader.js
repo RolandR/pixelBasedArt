@@ -11,17 +11,7 @@ uniform vec2 onePixel;
 
 vec2 getCoords(vec2 coord, vec2 offset){
 	//return vec2(mod(coord.x + onePixel.x * offset.x, 1.0), mod(coord.y + onePixel.y * offset.y, 1.0));
-	//return mod(coord + onePixel * offset, 1.0);
-
-	if((coord + onePixel * offset).x < 0.0
-	 ||(coord + onePixel * offset).y < 0.0
-	 ||(coord + onePixel * offset).x > 1.0
-	 ||(coord + onePixel * offset).y > 1.0
-	 ){
-		return coord;
-	} else {
-		return coord + onePixel * offset;
-	}
+	return mod(coord + onePixel * offset, 1.0);
 }
 
 //vec2 coordinates[];
@@ -42,10 +32,6 @@ void main(void){
 	sum += texture2D(u_image, getCoords(texCoord, vec2(-1.0, 0.0))).a;
 	sum += texture2D(u_image, getCoords(texCoord, vec2(1.0, 0.0))).a;*/
 
-	float oldr = texture2D(u_image, texCoord).r;
-	float oldg = texture2D(u_image, texCoord).g;
-	float oldb = texture2D(u_image, texCoord).b;
-
 	float r = texture2D(u_image, texCoord).r;
 	float g = texture2D(u_image, texCoord).g;
 	float b = texture2D(u_image, texCoord).b;
@@ -62,24 +48,32 @@ void main(void){
 		g = texture2D(u_image, texCoord).g * 0.98;
 	}*/
 
-	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).r > 0.5
-	&& texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).r < 0.55){
-		r = texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).r;
+	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).r > r){
+		r = sqrt((
+			r*r
+			+
+			texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).r
+			*texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).r
+		) / 2.0);
 	}
 
-	/*if(texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).g > oldg){
-		g = texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).g;
-	}
-	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).g < oldg){
-		g = texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).g;
+	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).g > g){
+		g = sqrt((
+			g*g
+			+
+			texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).g
+			*texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).g
+		) / 2.0);
 	}
 
-	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).b > oldb){
-		b = texture2D(u_image, getCoords(texCoord, vec2(0.0, 1.0))).b;
+	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).b > b){
+		b = sqrt((
+			b*b
+			+
+			texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).b
+			*texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).b
+		) / 2.0);
 	}
-	if(texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).b < oldb){
-		b = texture2D(u_image, getCoords(texCoord, vec2(0.0, -1.0))).b;
-	}*/
 	
 	gl_FragColor = vec4(r, g, b, a);
 	
